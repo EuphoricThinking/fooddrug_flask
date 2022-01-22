@@ -23,4 +23,7 @@ def create_app(test_config=None):
 	def hello():
 		return 'I want this to WORRRRRK'
 
+	from . import db
+	db.init_app(app)
+	
 	return app
