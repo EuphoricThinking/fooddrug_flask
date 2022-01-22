@@ -1,4 +1,4 @@
-import sqlite3, click, csv, os
+import sqlite3, click, csv, os, sq
 
 from flask import current_app, g
 from flask.cli import with_appcontext
@@ -38,6 +38,12 @@ def init_db():
         to_db = [(i['Nazwa_polska'], i['Nazwa_miedzynarodowa']) for i in dr]
 
     db.executemany("INSERT INTO substancja_aktywna (Nazwa_polska, Nazwa_miedzynarodowa) VALUES (?, ?);", to_db)
+    db.commit()
+
+    db.execute("DROP TABLE IF EXISTS zawartosc_leku;")
+    db.execute("CREATE TABLE zawartosc_leku ( Nazwa_handlowa NOT NULL REFERENCES lek, " +
+               "Nazwa_polska NOT NULL REFERENCES substancja_aktywna, " +
+               "CONSTRAINT id PRIMARY KEY (Nazwa_handlowa, Nazwa_polska) );")
     db.commit()
 
     db.close()
