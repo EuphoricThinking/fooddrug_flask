@@ -1,4 +1,4 @@
-import sqlite3, click, csv, os, sq
+import sqlite3, click, csv, os
 
 from flask import current_app, g
 from flask.cli import with_appcontext
@@ -45,6 +45,15 @@ def init_db():
                "Nazwa_polska NOT NULL REFERENCES substancja_aktywna, " +
                "CONSTRAINT id PRIMARY KEY (Nazwa_handlowa, Nazwa_polska) );")
     db.commit()
+
+    db.execute("DROP TABLE IF EXISTS interakcje_leki;")
+    db.execute(
+        "CREATE TABLE interakcje_leki (Inter_substancja_aktywna VARCHAR(30), Substancja_aktywna_leku VARCHAR(30));")
+    with open('FoodDrug/inter_subst_akt_prepared.csv', 'r') as fin:
+        dr = csv.DictReader(fin)
+        to_db = [(i['Inter_substancja_aktywna'], i['Substancja_aktywna_leku']) for i in dr]
+    db.commit()
+    db.executemany("INSERT INTO interakcje_leki (Inter_substancja_aktywna, Substancja_aktywna_leku) VALUES (?, ?);", to_db)
 
     db.close()
 
