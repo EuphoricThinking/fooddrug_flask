@@ -30,6 +30,16 @@ def init_db():
 
     db.executemany("INSERT INTO lek (Nazwa_handlowa, Strona) VALUES (?, ?);", to_db)
     db.commit()
+
+    db.execute("DROP TABLE IF EXISTS substancja_aktywna;")
+    db.execute("CREATE TABLE substancja_aktywna (Nazwa_polska VARCHAR(20) PRIMARY KEY, Nazwa_miedzynarodowa VARCHAR(20));")
+    with open('FoodDrug/subst_akt.csv', 'r') as fin:
+        dr = csv.DictReader(fin)
+        to_db = [(i['Nazwa_polska'], i['Nazwa_miedzynarodowa']) for i in dr]
+
+    db.executemany("INSERT INTO substancja_aktywna (Nazwa_polska, Nazwa_miedzynarodowa) VALUES (?, ?);", to_db)
+    db.commit()
+
     db.close()
 
 @click.command('init-db')
