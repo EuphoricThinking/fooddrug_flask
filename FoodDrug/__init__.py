@@ -25,5 +25,5 @@ def create_app(test_config=None):
 
 	from . import db
 	db.init_app(app)
-	
+
 	return app
