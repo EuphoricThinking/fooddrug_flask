@@ -48,12 +48,24 @@ def init_db():
 
     db.execute("DROP TABLE IF EXISTS interakcje_leki;")
     db.execute(
-        "CREATE TABLE interakcje_leki (Inter_substancja_aktywna VARCHAR(30), Substancja_aktywna_leku VARCHAR(30));")
+        "CREATE TABLE interakcje_leki (Inter_substancja_aktywna VARCHAR(30), Substancja_aktywna_leku VARCHAR(30)," +
+        "CONSTRAINT id_inter PRIMARY KEY (Inter_substancja_aktywna, Substancja_aktywna_leku));")
     with open('FoodDrug/inter_subst_akt_prepared.csv', 'r') as fin:
         dr = csv.DictReader(fin)
         to_db = [(i['Inter_substancja_aktywna'], i['Substancja_aktywna_leku']) for i in dr]
-    db.commit()
     db.executemany("INSERT INTO interakcje_leki (Inter_substancja_aktywna, Substancja_aktywna_leku) VALUES (?, ?);", to_db)
+    db.commit()
+
+    db.execute("DROP TABLE IF EXISTS interakcje_produkty_spozywcze_leki;")
+    db.execute(
+        "CREATE TABLE interakcje_produkty_spozywcze_leki (Nazwa_handlowa VARCHAR(30) NOT NULL, Inter_produkty_spozywcze VARCHAR(30)," +
+        "CONSTRAINT sp_id PRIMARY KEY (Nazwa_handlowa, Inter_produkty_spozywcze));")
+    with open('FoodDrug/inter_prod_spoz_leki.csv', 'r') as fin:
+        dr = csv.DictReader(fin)
+        to_db = [(i['Nazwa_handlowa'], i['Inter_produkty_spozywcze']) for i in dr]
+    db.executemany("INSERT INTO interakcje_produkty_spozywcze_leki (Nazwa_handlowa, Inter_produkty_spozywcze) VALUES (?, ?);",
+                   to_db)
+    db.commit()
 
     db.close()
 
