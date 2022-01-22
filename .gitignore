@@ -1,1 +1,5 @@
 venv
+instance
+./FoodDrug/__pycache__
+./FoodDrug/.~lock*
+
