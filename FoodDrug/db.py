@@ -67,6 +67,18 @@ def init_db():
                    to_db)
     db.commit()
 
+    db.execute("DROP TABLE IF EXISTS leczenie;")
+    db.execute(
+        "CREATE TABLE leczenie (Nazwa_handlowa NOT NULL REFERENCES lek, Dzialanie VARCHAR(200)," +
+        "CONSTRAINT sp_id PRIMARY KEY (Nazwa_handlowa, Dzialanie));")
+    with open('FoodDrug/merged.csv', 'r') as fin:
+        dr = csv.DictReader(fin)
+        to_db = [(i['Nazwa_handlowa'], i['Dzialanie']) for i in dr]
+    db.executemany(
+        "INSERT OR REPLACE INTO leczenie (Nazwa_handlowa, Dzialanie) VALUES (?, ?);",
+        to_db)
+    db.commit()
+
     db.close()
 
 @click.command('init-db')
