@@ -81,16 +81,7 @@ def init_db():
 
     db.close()
     
-@app.route('/list_lek')
-def list_lek():
-        con = sql.connect("database.db")
-	con.row_factory = sql.Row
-	
-	cur = con.cursor()
-	cur.execute("select * from lek")
-	
-	rows = cur.fetchall();
-   return render_template("lek.html",rows = rows)
+
 
 @click.command('init-db')
 @with_appcontext
