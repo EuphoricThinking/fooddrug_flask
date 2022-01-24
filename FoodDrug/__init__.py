@@ -1,6 +1,6 @@
-import os
+import os, sqlite3
 
-from flask import Flask
+from flask import Flask, render_template
 
 def create_app(test_config=None):
 	app = Flask(__name__, instance_relative_config=True)
@@ -26,15 +26,17 @@ def create_app(test_config=None):
 	@app.route("/")
 	def home():
 		return "Hello! this is the main page <h1>HELLO<h1>"
-	@app.route('/list_lek')
-	def list_lek():
-		con = sql.connect("database.db")
-		con.row_factory = sql.Row
-		cur = con.cursor()
-		cur.execute("select * from lek")
-		rows = cur.fetchall();
-		return render_template("lek.html",rows = rows)
+
 	from . import db
 	db.init_app(app)
+
+	@app.route('/list_lek')
+	def list_lek():
+		data = db.get_db()
+		data.row_factory = sqlite3.Row
+		cur = data.cursor()
+		cur.execute("select * from lek")
+		rows = cur.fetchall();
+		return render_template("list_lek.html",rows = rows)
 
 	return app
