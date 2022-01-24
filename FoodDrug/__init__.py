@@ -25,11 +25,10 @@ def create_app(test_config=None):
 		
 	@app.route("/")
 	def home():
-		return "Hello! this is the main page <h1>HELLO<h1>"
+		return render_template("home.html");
 
 	from . import db
 	db.init_app(app)
-
 	@app.route('/list_lek')
 	def list_lek():
 		data = db.get_db()
@@ -38,5 +37,18 @@ def create_app(test_config=None):
 		cur.execute("select * from lek")
 		rows = cur.fetchall();
 		return render_template("list_lek.html",rows = rows)
+
+	@app.route("/savedetails",methods = ["POST","GET"])  
+	def saveDetails():  
+		msg = "msg"  
+		if request.method == "POST":   
+				name = request.form["Nazwa_polska"]  
+				data = db.get_db()
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+				cur.execute("select * from substancja_aktywna WHERE Nazwa_polska = ?", name)
+				rows = cur.fetchall(); 
+				return render_template("saveDetails", rows = rows)
+		
 
 	return app
