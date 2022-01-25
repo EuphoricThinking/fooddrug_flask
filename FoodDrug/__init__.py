@@ -121,6 +121,48 @@ def create_app(test_config=None):
 				return render_template("blad.html", msg = msg)
 				data.close_db()
 
+	@app.route("/dataDrugRequest", methods = ["POST", "GET"])
+	def dataDrugRequest():
+		return render_template("formularzLekDane.html")
+
+	@app.route("/dataDrug", methods = ["POST", "GET"])
+	def dataDrug():
+		data = db.get_db()
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				name = request.form["drugSearch"]
+
+				if name == "":
+					msg = "Brak podanej nazwy leku"
+					return render_template("blad.html", msg=msg)
+
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+				#select nazwa polska
+				print("nazwa"+name, flush=True)
+				#name zamiast Abakawir
+				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}'".format(name))
+				print("PO execute", flush=True)
+				rows = cur.fetchall()
+
+				cur.execute("select COUNT(*) from interakcje_produkty_spozywcze_leki " +
+							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
+				count = cur.fetchone()
+
+				if len(rows) == 0:
+					msg = "Brak wskazanego leku"
+					return render_template("blad.html", msg=msg)
+				else:
+					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0])
+				data.close_db()
+			except:
+				msg = "Nie można znaleźć leku"
+				return render_template("blad.html", msg = msg)
+				data.close_db()
+
+
 
 	return app
 
