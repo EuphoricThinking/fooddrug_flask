@@ -53,6 +53,10 @@ def create_app(test_config=None):
 				print("robie cos w srodku", flush=True)
 				name = request.form["drugSearch"]
 
+				if name == "":
+					msg = "Brak podanej nazwy leku"
+					return render_template("blad.html", msg=msg)
+
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
 				#select nazwa polska
