@@ -36,7 +36,7 @@ def create_app(test_config=None):
 		data.row_factory = sqlite3.Row
 		cur = data.cursor()
 		#cur.execute("select * from lek")
-		cur.execute("select * from zawartosc_leku")
+		cur.execute("select * from zawartosc_leku WHERE Nazwa_handlowa = 'Abakawir'")
 		rows = cur.fetchall()
 		return render_template("list_lek.html",rows = rows)
 
@@ -56,9 +56,10 @@ def create_app(test_config=None):
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
 				#select nazwa polska
-				print("nazwa ", name, flush=True)
+				print("nazwa"+name, flush=True)
 				#name zamiast Abakawir
-				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = ?", "Abakawir")
+				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}'".format(name))
+				print("PO execute", flush=True)
 				rows = cur.fetchall()
 
 				return render_template("wypiszSubstAkt.html", rows = rows, name = name)
