@@ -44,6 +44,11 @@ def init_db():
     db.execute("CREATE TABLE zawartosc_leku ( Nazwa_handlowa NOT NULL REFERENCES lek, " +
                "Nazwa_polska NOT NULL REFERENCES substancja_aktywna, " +
                "CONSTRAINT id PRIMARY KEY (Nazwa_handlowa, Nazwa_polska) );")
+    with open('FoodDrug/lekSubstAkt.csv', 'r') as fin:
+        dr = csv.DictReader(fin)
+        to_db = [(i['Nazwa_handlowa'], i['Nazwa_polska']) for i in dr]
+
+    db.executemany("INSERT OR REPLACE INTO zawartosc_leku (Nazwa_handlowa, Nazwa_polska) VALUES (?, ?);", to_db)
     db.commit()
 
     db.execute("DROP TABLE IF EXISTS interakcje_leki;")
@@ -71,7 +76,7 @@ def init_db():
     db.execute(
         "CREATE TABLE leczenie (Nazwa_handlowa NOT NULL REFERENCES lek, Dzialanie VARCHAR(200)," +
         "CONSTRAINT sp_id PRIMARY KEY (Nazwa_handlowa, Dzialanie));")
-    with open('FoodDrug/merged.csv', 'r') as fin:
+    with open('FoodDrug/lek_dzialanie.csv', 'r') as fin:
         dr = csv.DictReader(fin)
         to_db = [(i['Nazwa_handlowa'], i['Dzialanie']) for i in dr]
     db.executemany(

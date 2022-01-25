@@ -35,7 +35,8 @@ def create_app(test_config=None):
 		data = db.get_db()
 		data.row_factory = sqlite3.Row
 		cur = data.cursor()
-		cur.execute("select * from lek")
+		#cur.execute("select * from lek")
+		cur.execute("select * from zawartosc_leku")
 		rows = cur.fetchall()
 		return render_template("list_lek.html",rows = rows)
 
@@ -46,14 +47,18 @@ def create_app(test_config=None):
 	@app.route("/saveDrugName", methods = ["POST", "GET"])
 	def insertDrug2():
 		data = db.get_db()
+		print("robie cos", flush=True)
 		if request.method == "POST":
 			try:
+				print("robie cos w srodku", flush=True)
 				name = request.form["drugSearch"]
 
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
 				#select nazwa polska
-				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = ?", name)
+				print("nazwa ", name, flush=True)
+				#name zamiast Abakawir
+				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = ?", "Abakawir")
 				rows = cur.fetchall()
 
 				return render_template("wypiszSubstAkt.html", rows = rows, name = name)
