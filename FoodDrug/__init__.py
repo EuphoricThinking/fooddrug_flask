@@ -45,7 +45,7 @@ def create_app(test_config=None):
 		data = db.get_db()
 		data.row_factory = sqlite3.Row
 		cur = data.cursor()
-		cur.execute("select Inter_produkty_spozywcze, COUNT(*) from interakcje_produkty_spozywcze_leki GROUP BY Inter_produkty_spozywcze ORDER BY COUNT(*) DESC")
+		cur.execute("select Inter_produkty_spozywcze, COUNT(*) from interakcje_produkty_spozywcze_leki WHERE Inter_produkty_spozywcze <> '' GROUP BY Inter_produkty_spozywcze ORDER BY COUNT(*) DESC")
 		rows = cur.fetchall()
 		return render_template("trzy_najbardziej_niebezpieczne_produkty.html", rows = rows)
 
