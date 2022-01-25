@@ -45,7 +45,7 @@ def create_app(test_config=None):
 		return render_template("formularzLek.html")
 
 	@app.route("/saveDrugName", methods = ["POST", "GET"])
-	def insertDrug2():
+	def saveDrugName():
 		data = db.get_db()
 		print("robie cos", flush=True)
 		if request.method == "POST":
