@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+   <body>
+      <h3>Substancje aktywne zawarte w leku {{name}}</h3>
+      <table border = 1>
+         <thead>
+            <td>Substancja aktywna</td>
+         </thead>
+
+         {% for row in rows %}
+            <tr>
+               <td>{{row['Nazwa_polska']}}</td>
+            </tr>
+         {% endfor %}
+      </table>
+
+      <a href = "/">Powrót do strony głownej</a>
+
+   </body>
+</html>

@@ -1,6 +1,6 @@
 import os, sqlite3
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 def create_app(test_config=None):
 	app = Flask(__name__, instance_relative_config=True)
@@ -29,26 +29,38 @@ def create_app(test_config=None):
 
 	from . import db
 	db.init_app(app)
+
 	@app.route('/list_lek')
 	def list_lek():
 		data = db.get_db()
 		data.row_factory = sqlite3.Row
 		cur = data.cursor()
 		cur.execute("select * from lek")
-		rows = cur.fetchall();
+		rows = cur.fetchall()
 		return render_template("list_lek.html",rows = rows)
 
-	@app.route("/savedetails",methods = ["POST","GET"])  
-	def saveDetails():  
-		msg = "msg"  
-		if request.method == "POST":   
-				name = request.form["Nazwa_polska"]  
-				data = db.get_db()
+	@app.route("/insertDrug", methods = ["POST","GET"])
+	def insertDrug():
+		return render_template("formularzLek.html")
+
+	@app.route("/saveDrugName", methods = ["POST", "GET"])
+	def insertDrug2():
+		data = db.get_db()
+		if request.method == "POST":
+			try:
+				name = request.form["drugSearch"]
+
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
-				cur.execute("select * from substancja_aktywna WHERE Nazwa_polska = ?", name)
-				rows = cur.fetchall(); 
-				return render_template("saveDetails", rows = rows)
-		
+				#select nazwa polska
+				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = ?", name)
+				rows = cur.fetchall()
+
+				return render_template("wypiszSubstAkt.html", rows = rows, name = name)
+				data.close_db()
+			except:
+				msg = "Brak wskazanego leku"
+				return render_template("blad.html", msg = msg)
+				data.close_db()
 
 	return app
