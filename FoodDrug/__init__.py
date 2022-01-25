@@ -61,11 +61,14 @@ def create_app(test_config=None):
 				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}'".format(name))
 				print("PO execute", flush=True)
 				rows = cur.fetchall()
-
-				return render_template("wypiszSubstAkt.html", rows = rows, name = name)
+				if len(rows) == 0:
+					msg = "Brak wskazanego leku"
+					return render_template("blad.html", msg=msg)
+				else:
+					return render_template("wypiszSubstAkt.html", rows = rows, name = name)
 				data.close_db()
 			except:
-				msg = "Brak wskazanego leku"
+				msg = "Nie można znaleźć leku"
 				return render_template("blad.html", msg = msg)
 				data.close_db()
 
