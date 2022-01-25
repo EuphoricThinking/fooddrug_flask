@@ -2,13 +2,17 @@
 <html>
    <body>
       <h3>Substancje aktywne zawarte w leku {{name}}</h3>
-      <ul>
+      <table border = 1>
+         <thead>
+            <td>Substancja aktywna</td>
+         </thead>
+
          {% for row in rows %}
-            <li>
-               {{row['Nazwa_polska']}}
-            </li>
+            <tr>
+               <td>{{row['Nazwa_polska']}}</td>
+            </tr>
          {% endfor %}
-      </ul>
+      </table>
 
       <a href = "/">Powrót do strony głownej</a>
 
