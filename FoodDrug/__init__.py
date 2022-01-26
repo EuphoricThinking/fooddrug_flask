@@ -478,7 +478,69 @@ def create_app(test_config=None):
 
 
 
+	@app.route("/findMyInteractionsForm", methods=["POST", "GET"])
+	def findMyInteractionsForm():
+		return render_template("findMyInteractionsForm.html")
 
+	@app.route("/findMyInteractions", methods=["POST", "GET"])
+	def listAllInteractions():
+		data = db.get_db()
+
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				name = request.form["drugSearch"]
+
+				if name == "":
+					msg = "Brak podanej nazwy"
+					return render_template("findMyInteractionsMessage.html", msg=msg)
+
+				print("robie cos w srodku", flush=True)
+
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+
+				cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='moje_leki';")
+				rows = cur.fetchall()
+				print("Pokaż leki po fetch", flush=True)
+
+				if len(rows) == 0:
+					msg = "Brak dodanych leków"
+					print("Nie znalezione moje_leki", flush=True)
+					return render_template("myDrugsMessage.html", msg=msg)
+
+				cur.execute("select DISTINCT Nazwa_handlowa from interakcje_produkty_spozywcze_leki " +
+							"WHERE Nazwa_handlowa IN (SELECT * Nazwa_handlowa from moje_leki) AND Inter_produkty_spozywcze = '{}'".format(name))
+				food = cur.fetchall()
+				print("select food", flush=True)
+
+				cur.execute("select DISTINCT Nazwa_handlowa from (select A.Nazwa_handlowa, B.Nazwa_polska from moje_leki A " +
+					"left join zawartosc_leku B on A.Nazwa_handlowa = B.Nazwa_handlowa) C, interakcje_leki D " +
+					"WHERE C.Nazwa_polska = D.Substancja_aktywna_leku AND D.Inter_substancja_aktywna = '{}'".format(name))
+				inters = cur.fetchall()
+				print("select subst akt", flush=True)
+
+				cur.execute(
+					"select DISTINCT Nazwa_handlowa from (select A.Nazwa_handlowa, B.Nazwa_polska from moje_leki A " +
+					"left join zawartosc_leku B on A.Nazwa_handlowa = B.Nazwa_handlowa) C, interakcje_leki D " +
+					"WHERE C.Nazwa_polska = D.Substancja_aktywna_leku AND D.Inter_substancja_aktywna IN "
+					+ "(SELECT Nazwa_polska FROM zawartosc_leku WHERE Nazwa_handlowa = '{}'".format(
+						name))
+				drugs_inter = cur.fetchall()
+				print("select leki", flush=True)
+
+
+
+				return render_template("listAllInteractionsMyDrugs.html", count=len(food) + len(inters),
+									   food=food_to_dict,
+									   inters=inters_to_dict)
+				data.close_db()
+			except Exception as e:
+				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
+				return render_template("blad.html", msg=msg)
+				data.close_db()
 
 	return app
 
