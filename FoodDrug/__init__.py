@@ -153,22 +153,30 @@ def create_app(test_config=None):
 
 				cur.execute("select Dzialanie from leczenie WHERE Nazwa_handlowa = '{}'".format(name))
 				indirections = cur.fetchall()
-				# for x in indirections:
-				# 	print(tuple(x), flush=True)
-				print_me = [dict(x) for x in indirections]
-				# #print("TUTAJ", print_me, flush=True)
-				# print("ind", indirections[0][0], "ind", flush=True)
-				if indirections[0][0] == '':
-					print_me[0].update({'Dzialanie': 'Brak danych'})
 
-				#print_me = [dict(x) for x in indirections]
-				#print("TUTAJ", print_me, flush=True)
+				ind_to_dict = [dict(x) for x in indirections]
+				if indirections[0][0] == '':
+					ind_to_dict[0].update({'Dzialanie': 'Brak danych'})
+
+				# cur.execute("select distinct Inter_produkty_spozywcze from interakcje_produkty_spozywcze_leki "
+				# 	+ "WHERE Nazwa_handlowa = '{}'".format(name))
+				# food = cur.fetchall()
+				# food_to_dict = [dict(x) for x in food]
+				# if food[0][0] == '':
+				# 	food_to_dict[0].update({'Inter_produkty_spozywcze': 'Brak danych'})
+				#
+				# cur.execute("select distinct Inter_substancja_aktywna from interakcje_leki WHERE Substancja_aktywna_leku IN " +
+				# 			"(select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
+				# inters = cur.fetchall()
+				# inters_to_dict = [dict(x) for x in inters]
+				# if inters[0][0] == '':
+				# 	inters_to_dict[0].update({'Inter_substancja_aktywna': 'Brak danych'})
 
 				if len(rows) == 0:
 					msg = "Brak wskazanego leku"
 					return render_template("blad.html", msg=msg)
 				else:
-					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0], inds = print_me)
+					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0], inds = ind_to_dict)
 				data.close_db()
 			except Exception as e:
 				msg = "Nie można znaleźć leku"

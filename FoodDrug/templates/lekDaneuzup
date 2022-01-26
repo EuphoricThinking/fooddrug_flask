@@ -1,0 +1,15 @@
+<ul>
+         {% for inter in inters %}
+            <li>
+               {{inter['Inter_substancja_aktywna']}}
+            </li>
+         {% endfor %}
+      </ul>
+
+      <ul>
+         {% for foo in food %}
+            <li>
+               {{foo['Inter_produkty_spozywcze']}}
+            </li>
+         {% endfor %}
+      </ul><br>
