@@ -528,17 +528,25 @@ def create_app(test_config=None):
 					"WHERE C.Nazwa_polska = D.Substancja_aktywna_leku AND D.Inter_substancja_aktywna IN "
 					+ "(SELECT Nazwa_polska FROM zawartosc_leku WHERE Nazwa_handlowa = '{}');".format(name))
 				drugs_inter = cur.fetchall()
-				print("select leki", flush=True)
-
 				count = len(drugs_inter) + len(inters) + len(food)
+				print(count)
 				if count == 0:
 					msg = "Brak znalezionych interakcji"
 					return render_template("myDrugsMessage.html", msg=msg)
+				print("before")
+				print(food)
+				food_to_dict = [dict(x) for x in food]
+				print("food to dict")
+				print(inters)
+				inters_to_dict = [dict(x) for x in inters]
+				print("inters to dict")
+				drugs_inter_to_dict = [dict(x) for x in drugs_inter]
+				#result.update(dict(food)).update(dict(drugs_inter)).update(dict(inters))
+				print("drugs to dict")
+				result = food_to_dict + inters_to_dict + drugs_inter_to_dict
+				print("added")
 
-				result = {}
-				result.update(dict(food)).update(dict(drugs_inter)).update(dict(inters))
-
-				return render_template("listAllInteractionsMyDrugs.html", count = count, inters = [result])
+				return render_template("listAllInteractionsMyDrugs.html", count = count, inters = result)
 
 				data.close_db()
 			except Exception as e:
