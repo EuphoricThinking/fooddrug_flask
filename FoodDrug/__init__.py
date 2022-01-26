@@ -466,6 +466,11 @@ def create_app(test_config=None):
 			if inters[0][0] == '':
 				inters_to_dict[0].update({'Inter_substancja_aktywna': 'Brak danych'})
 
+			# l_food = len(food)
+			# l_inters = len(inters)
+			# if l_inters + l_food == 0:
+			# 	msg = "Brak interakcji"
+
 			return render_template("listAllInteractionsMyDrugs.html", count=len(food) + len(inters),
 									   food=food_to_dict,
 									   inters=inters_to_dict)
@@ -546,7 +551,7 @@ def create_app(test_config=None):
 				result = food_to_dict + inters_to_dict + drugs_inter_to_dict
 				print("added")
 
-				return render_template("listAllInteractionsMyDrugs.html", count = count, inters = result)
+				return render_template("listAllInteractionsMyDrugsSuppliedInput.html", count = count, inters = result)
 
 				data.close_db()
 			except Exception as e:
