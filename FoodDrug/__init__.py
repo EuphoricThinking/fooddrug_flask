@@ -630,5 +630,82 @@ def create_app(test_config=None):
 				return render_template("blad.html", msg=msg)
 				data.close_db()
 
+
+
+	@app.route("/listMyDrugs", methods=["POST", "GET"])
+	def listMyDrugs():
+		data = db.get_db()
+		data.row_factory = sqlite3.Row
+		cur = data.cursor()
+
+		cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='moje_leki';")
+		rows = cur.fetchall()
+		print("Pokaż leki po fetch", flush=True)
+
+		if len(rows) == 0:
+			msg = "Brak dodanych leków"
+			print("Nie znalezione moje_leki", flush=True)
+			return render_template("myDrugsMessage.html", msg=msg)
+
+		cur.execute("select Nazwa_handlowa from moje_leki;")
+		rows = cur.fetchall()
+
+		return render_template("listMyDrugs.html", rows=rows)
+
+	@app.route("/dataMyDrugList", methods=["POST", "GET"])
+	def dataMyDrugList():
+		data = db.get_db()
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				name = request.form["drugSearch"]
+
+				if name == "":
+					msg = "Brak podanej nazwy leku"
+					return render_template("blad.html", msg=msg)
+
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+				# select nazwa polska
+				print("nazwa" + name, flush=True)
+				# name zamiast Abakawir
+				cur.execute("select Nazwa_polska, Nazwa_miedzynarodowa from substancja_aktywna where Nazwa_polska in "
+							+ " (select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
+				print("PO execute", flush=True)
+				rows = cur.fetchall()
+
+				cur.execute("select COUNT(DISTINCT Inter_produkty_spozywcze) from interakcje_produkty_spozywcze_leki " +
+							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
+				count1 = cur.fetchone()
+
+				cur.execute("select COUNT(DISTINCT Inter_substancja_aktywna) from interakcje_leki WHERE " +
+							"Inter_substancja_aktywna <> '' AND Substancja_aktywna_leku IN " +
+							"(select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
+				count2 = cur.fetchone()
+
+				cur.execute("select Dzialanie from leczenie WHERE Nazwa_handlowa = '{}'".format(name))
+				indirections = cur.fetchall()
+
+				ind_to_dict = [dict(x) for x in indirections]
+				if indirections[0][0] == '':
+					ind_to_dict[0].update({'Dzialanie': 'Brak danych'})
+				cur.execute("select Strona from lek where Nazwa_handlowa = '{}'".format(name))
+				address = cur.fetchone()
+
+				if len(rows) == 0:
+					msg = "Brak wskazanego leku"
+					return render_template("blad.html", msg=msg)
+				else:
+					return render_template("wypiszDaneZMojejListy.html", rows=rows, name=name,
+										   count=int(count1[0]) + int(count2[0]),
+										   inds=ind_to_dict, addr=address[0])
+				data.close_db()
+			except Exception as e:
+				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
+				return render_template("blad.html", msg=msg)
+				data.close_db()
+
 	return app
 

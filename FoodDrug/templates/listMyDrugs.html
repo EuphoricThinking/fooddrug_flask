@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+   <body>
+      <a href = "/">Powrót do głównego menu</a><br>
+      <a href="/myDrugsMenu">Powrót do menu</a><br>
+      <h3>Charakterystyka moich leków</h3>
+
+      <ul>
+         {% for row in rows %}
+               <form action = "/dataMyDrugList" method = "post">
+            	   <button type="submit" name = "drugSearch" value = {{row['Nazwa_handlowa']}}>{{row['Nazwa_handlowa']}}</button>
+    		</form>
+         {% endfor %}
+      </ul>
+
+
+   </body>
+</html>
