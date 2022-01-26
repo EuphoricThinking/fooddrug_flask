@@ -67,7 +67,7 @@ Amitryptylina,amitryptylina
 Amitryptylina,chlorowodorek amitryptyliny
 Amlodypina,bezylan amlodypiny
 Ampicylina,ampicylina
-Ampicylina,sÃ³l sodowa ampicyliny
+Ampicylina,sol sodowa ampicyliny
 Amsakryna,amsakryna
 Anagrelid,anagrelid
 Anakinra,anakinra
@@ -123,7 +123,7 @@ Betahistyna,betahistyna
 Betahistyna,dichlorowodorek betahistyny
 Betametazon,betametazon
 Betametazon,dipropionian betametazonu
-Betametazon,sÃ³l sodowa fosforanu betametazonu
+Betametazon,sol sodowa fosforanu betametazonu
 Betametazon,walerianian betametazonu
 Bewacyzumab,bewacyzumab
 Bezylezomab,bezylezomab
@@ -137,7 +137,7 @@ Biperyden,chlorowodorek biperydenu
 Bisakodyl,bisakodyl
 Bisoprolol,bisoprolol
 Bisoprolol,fumaran bisoprololu
-biwalirudyna,Biwalirudyna
+biwalirudyna,biwalirudyna
 Bleomycyna,bleomycyna
 Blinatumomab,blinatumomab  
 Boceprewir,boceprewir
@@ -180,7 +180,7 @@ Cefiksym,cefiksym
 Cefoperazon,cefoperazon
 Cefotaksym,cefotaksym
 Ceftazydym,ceftazydym
-Ceftazydym,ceftazydym piÄ™ciowodny
+Ceftazydym,ceftazydym pieciowodny
 Ceftolozan,ceftolozan
 Ceftriakson,ceftriakson
 Ceftriakson,ceftriakson sodowy
@@ -209,7 +209,6 @@ Cilazapryl,cilazapryl
 Cilostazol,cilostazol
 Ciprofibrat,ciprofibrat
 Ciprofloksacyna,ciprofloksacyna
-,
 Cisplatyna,cisplatyna
 Citalopram,bromowodorek citalopramu
 Citalopram,citalopram
@@ -225,7 +224,6 @@ Cyproheptadyna,chlorowodorek cyproheptadyny
 Cyproteron,cyproteron
 Cyproteron,octan cyproteronu
 Cytarabina,cytarabina
-,
 Cytyzyna,cytyzyna
 Cyzapryd,cyzapryd
 Dabigatran,dabigatran
@@ -234,23 +232,9 @@ Dabrafenib,dabrafenib
 Dakarbazyna,dakarbazyna
 Daklataswir,daklataswir
 Daklizumab,daklizumab
-,
-,
 Dapagliflozyna,dapagliflozyna
 Dapoksetyna,chlorowodorek dapoksetyny
-Dapson,Dapson jest stosowany w leczeniu trÄ…du
-Dapson,dermatoz pÄ™cherzykowych (np. pÄ™cherzyca zwyczajna
-Dapson,rodzinna pÄ™cherzyca
-Dapson,opryszczkowe zapalenie skÃ³ry
-Dapson,autoimmunologiczne choroby pÄ™cherzykowe)
-Dapson,krostkowego zapaleniaÂ skÃ³ry
-Dapson,"zgorzelinowegoÂ zapaleniaÂ skÃ³ry,Â skÃ³rnejÂ postaciÂ tocznia rumieniowatego"
-Dapson,pokrzywkiÂ naczyniowej
-Dapson,"zapaleniaÂ naczyÅ„ (zwiÄ…zane z IgA,Â guzkowe,Â leukocytoklastyczne). Innym wskazaniem do stosowania dapsonu jest zespÃ³Å‚ Weber-Christiana"
-Dapson,zespÃ³Å‚ Melkerssona-Rosenthala
-Dapson,ChorobaÂ LeÅ›niowskiego-Crohna
-Dapson,"malaria,Â przewlekÅ‚e reumatoidalne zapalenie stawÃ³w (jako alternatywa do zwykle stosowanych lekÃ³w)"
-Dapson,a takÅ¼e zakaÅ¼enieÂ wirusem HIV (profilaktyka i leczenieÂ zapaleniaÂ pÅ‚uc lub infekcji mÃ³zgu powodowanych przez HIV).Â 
+Dapson,dapson
 Daptomycyna,daptomycyna
 Daratumumab,daratumumab
 Darunawir,darunawir
@@ -260,13 +244,11 @@ Dazabuwir,dazabuwir
 Decytabina,decytabina
 Deferazyroks,deferasiroks
 Deferazyroks,deferazyroks
-,
-,
 Defibrotyd,defibrotyd
 Deksametazon,deksametazon
 Deksametazon,fosforan deksametazonu
 Deksametazon,octan deksametazonu
-Deksametazon,sÃ³l sodowa fosforanu deksametazonu
+Deksametazon,sol sodowa fosforanu deksametazonu
 Deksbromfeniramina,maleinian deksbromfeniraminy
 Deksibuprofen,deksibuprofen
 Deksketoprofen,dexketoprofen
@@ -300,7 +282,7 @@ Dihydrokodeina,winian dihydrokodeiny
 Diklofenak,diklofenak
 Diklofenak,diklofenak dietyloamoniowy
 Diklofenak,diklofenak potasu
-Diklofenak,sÃ³l sodowa diklofenaku
+Diklofenak,sol sodowa diklofenaku
 Diltiazem,diltiazemu chlorowodorek
 Dimenhydrynat,dimenhydrynat
 Dimetynden,dimetynden melanian
@@ -334,7 +316,6 @@ Dulaglutyd,dulaglutyd
 Duloksetyna,duloksetyna
 Duloksetyna,chlorowodorek duloksetyny
 Dupilumab,dupilumab
-,
 Dydrogesteron,dydrogesteron
 Edoksaban,edoksaban
 Edotreotyd,edotreotyd
@@ -379,10 +360,10 @@ Esmolol,esmololu chlorowodorek
 Esomeprazol,esomeprazol
 Estazolam,estazolam
 Estradiol,estradiol
-Estradiol,estradiol pÃ³Å‚wodny
+Estradiol,estradiol poÅ‚wodny
 Estradiol,waleinian estradiolu
 Estriol,estriol
-Estry,estry etylowe kwasÃ³w omega-3
+Estry,estry etylowe kwasow omega-3
 Etambutol,etambutol
 Etambutol,etambutolu chlorowodorek
 Etamsylat,etamsylat
