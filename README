@@ -1,0 +1,33 @@
+FoodDrug
+Autorki: Agata Momot, Małgorzata Gwiazda
+
+
+Aplikacja służąca do wyszukiwania interakcji leków z produktami spożywczymi oraz z pozostałymi lekami,
+substancjami aktywnymi. Umożliwia zarówno niezależne przeglądanie bazy danych, jak i tworzenie własnej bazy
+z dodawanymi lekami.
+
+
+
+Wymagania:
+
+Python 3.8.10
+Flask 2.0.2
+Werkzeug 2.0.2
+
+W katalogu, w którym znajduje się repozytorium, należy aktywować środowisko Pythona:
+python3 -m venv venv
+source venv/bin/activate
+
+
+
+Użytkowanie:
+
+W katalogu, w którym znajduje się pobrane repozytorium (na zewnątrz folderu FoodDrug), należy wpisać w terminal:
+export FLASK_APP=FoodDrug
+flask init-db
+
+Aplikację uruchamiamy w katalgu rodzicielskim FoodDrug za pomocą polecenia:
+flask run
+
+Następnie przechodzimy do linku wskazanego przez aplikację bądź od razu wpisujemy w przeglądarkę:
+localhost:5000/
