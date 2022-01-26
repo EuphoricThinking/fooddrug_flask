@@ -396,6 +396,7 @@ def create_app(test_config=None):
 					data.row_factory = sqlite3.Row
 					cur = data.cursor()
 
+					#Checks whether the table exists
 					cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='moje_leki';")
 					#print("Pokaż leki", flush=True)
 					rows = cur.fetchall()
