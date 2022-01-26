@@ -151,14 +151,28 @@ def create_app(test_config=None):
 							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
 				count = cur.fetchone()
 
+				cur.execute("select Dzialanie from leczenie WHERE Nazwa_handlowa = '{}'".format(name))
+				indirections = cur.fetchall()
+				for x in indirections:
+					print(tuple(x), flush=True)
+				print_me = [dict(x) for x in indirections]
+				print("TUTAJ", print_me, flush=True)
+				print("ind", indirections[0][0], "ind", flush=True)
+				if indirections[0][0] == '':
+					print_me[0].update({'Dzialanie': 'Brak danych'})
+
+				print_me = [dict(x) for x in indirections]
+				print("TUTAJ", print_me, flush=True)
+
 				if len(rows) == 0:
 					msg = "Brak wskazanego leku"
 					return render_template("blad.html", msg=msg)
 				else:
-					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0])
+					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0], inds = print_me)
 				data.close_db()
-			except:
+			except Exception as e:
 				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
 				return render_template("blad.html", msg = msg)
 				data.close_db()
 
