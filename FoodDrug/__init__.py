@@ -104,7 +104,7 @@ def create_app(test_config=None):
 
 				if name == "":
 					msg = "Brak podanej nazwy produktu"
-					return render_template("blad.html", msg=msg)
+					return render_template("bladProdukt.html", msg=msg)
 
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
@@ -116,7 +116,7 @@ def create_app(test_config=None):
 				rows = cur.fetchall()
 				if len(rows) == 0:
 					msg = "Brak wskazanego produktu"
-					return render_template("blad.html", msg=msg)
+					return render_template("bladProdukt.html", msg=msg)
 				else:
 					return render_template("wypiszNazwa_handlowa.html", rows = rows, name = name)
 				data.close_db()
@@ -142,7 +142,7 @@ def create_app(test_config=None):
 
 				if name == "":
 					msg = "Brak podanej nazwy leku"
-					return render_template("blad.html", msg=msg)
+					return render_template("bladWypiszDane.html", msg=msg)
 
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
@@ -153,6 +153,10 @@ def create_app(test_config=None):
 					+ " (select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
 				print("PO execute", flush=True)
 				rows = cur.fetchall()
+
+				if len(rows) == 0:
+					msg="Brak wskazanego leku w bazie"
+					return render_template("bladWypiszDane.html", msg=msg)
 
 				cur.execute("select COUNT(DISTINCT Inter_produkty_spozywcze) from interakcje_produkty_spozywcze_leki " +
 							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
@@ -216,7 +220,7 @@ def create_app(test_config=None):
 
 				if name == "":
 					msg = "Brak podanej nazwy leku"
-					return render_template("blad.html", msg=msg)
+					return render_template("bladInterakcje.html", msg=msg)
 
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
@@ -225,7 +229,7 @@ def create_app(test_config=None):
 				rows = cur.fetchall()
 				if len(rows) == 0:
 					msg = "Brak wskazanego leku"
-					return render_template("blad.html", msg=msg)
+					return render_template("bladInterakcje.html", msg=msg)
 
 				cur.execute("select COUNT(DISTINCT Inter_produkty_spozywcze) from interakcje_produkty_spozywcze_leki " +
 							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
