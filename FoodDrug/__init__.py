@@ -171,12 +171,15 @@ def create_app(test_config=None):
 				# inters_to_dict = [dict(x) for x in inters]
 				# if inters[0][0] == '':
 				# 	inters_to_dict[0].update({'Inter_substancja_aktywna': 'Brak danych'})
+				cur.execute("select Strona from lek where Nazwa_handlowa = '{}'".format(name))
+				address = cur.fetchone()
 
 				if len(rows) == 0:
 					msg = "Brak wskazanego leku"
 					return render_template("blad.html", msg=msg)
 				else:
-					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0], inds = ind_to_dict)
+					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0], inds = ind_to_dict,
+										   addr = address[0])
 				data.close_db()
 			except Exception as e:
 				msg = "Nie można znaleźć leku"
