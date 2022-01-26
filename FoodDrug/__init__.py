@@ -143,7 +143,8 @@ def create_app(test_config=None):
 				#select nazwa polska
 				print("nazwa"+name, flush=True)
 				#name zamiast Abakawir
-				cur.execute("select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}'".format(name))
+				cur.execute("select Nazwa_polska, Nazwa_miedzynarodowa from substancja_aktywna where Nazwa_polska in "
+					+ " (select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
 				print("PO execute", flush=True)
 				rows = cur.fetchall()
 
