@@ -49,6 +49,8 @@ def create_app(test_config=None):
 		rows = cur.fetchall()
 		return render_template("trzy_najbardziej_niebezpieczne_produkty.html", rows = rows)
 
+
+
 	@app.route("/insertDrug", methods = ["POST","GET"])
 	def insertDrug():
 		return render_template("formularzLek.html")
@@ -85,6 +87,8 @@ def create_app(test_config=None):
 				return render_template("blad.html", msg = msg)
 				data.close_db()
 
+
+
 	@app.route("/insertProduct", methods = ["POST","GET"])
 	def insertProduct():
 		return render_template("formularzProdukt.html")
@@ -120,6 +124,8 @@ def create_app(test_config=None):
 				msg = "Nie można znaleźć produktu"
 				return render_template("blad.html", msg = msg)
 				data.close_db()
+
+
 
 	@app.route("/dataDrugRequest", methods = ["POST", "GET"])
 	def dataDrugRequest():
@@ -193,6 +199,8 @@ def create_app(test_config=None):
 				return render_template("blad.html", msg = msg)
 				data.close_db()
 
+
+
 	@app.route("/findInteractionsRequest", methods = ["POST", "GET"])
 	def findInteractionsRequest():
 		return render_template("findInteractionsRequest.html")
@@ -251,6 +259,69 @@ def create_app(test_config=None):
 				print(repr(e), flush=True)
 				return render_template("blad.html", msg=msg)
 				data.close_db()
+
+
+
+	@app.route("/myDrugsMenu", methods=["POST", "GET"])
+	def myDrugsMenu():
+		return render_template("myDrugsMenu.html")
+
+	@app.route("/addMyDrugForm", methods=["POST", "GET"])
+	def addMyDrugForm():
+		return render_template("addMyDrug.html")
+
+	@app.route("/addMyDrug", methods=["POST", "GET"])
+	def addMyDrug():
+		data = db.get_db()
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				name = request.form["drugSearch"]
+
+				if name == "":
+					msg = "Brak podanej nazwy leku"
+					return render_template("successAdded.html", msg = msg)
+
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+
+				cur.execute("CREATE TABLE IF NOT EXISTS moje_leki (Nazwa_handlowa VARCHAR(20) PRIMARY KEY);")
+				print("Stworzyłem", flush=True)
+				cur.execute("SELECT * FROM moje_leki WHERE Nazwa_handlowa = '{}'".format(name))
+				print("Szukałem w moich lekach", flush=True)
+				rows = cur.fetchall()
+
+				if (len(rows) > 0):
+					msg = "Podany lek znajduje się już w bazie"
+					return render_template("successAdded.html", msg=msg)
+
+				cur.execute("SELECT * FROM lek WHERE Nazwa_handlowa = '{}'".format(name))
+				print("Szukałem w leku", flush=True)
+				rows = cur.fetchall()
+
+				if (len(rows) == 0):
+					msg = "Podany lek nie został dodany; nie jest jeszcze obsługiwany przez naszą bazę"
+					return render_template("successAdded.html", msg=msg)
+
+				cur.execute("INSERT INTO moje_leki (Nazwa_handlowa) VALUES (?);", (name,))
+				#WHERE NOT EXISTS (SELECT * FROM moje_leki" +" WHERE Nazwa_handlowa = '{}')".format(name, name)
+				print("Dodałem", flush=True)
+				data.commit()
+
+				msg = "Twój lek został dodany"
+				return render_template("successAdded.html", msg = msg)
+				data.close_db()
+			except Exception as e:
+				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
+				return render_template("blad.html", msg=msg)
+				data.close_db()
+
+
+
+
+
 
 	return app
 
