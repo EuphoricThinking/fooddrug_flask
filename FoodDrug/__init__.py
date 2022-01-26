@@ -261,6 +261,13 @@ def create_app(test_config=None):
 				data.close_db()
 
 
+
+	@app.route("/browsers")
+	def browsers():
+		return render_template("browsers.html")
+
+
+
 ######################################################################################################################
 	@app.route("/myDrugsMenu", methods=["POST", "GET"])
 	def myDrugsMenu():
