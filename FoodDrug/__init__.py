@@ -483,7 +483,7 @@ def create_app(test_config=None):
 		return render_template("findMyInteractionsForm.html")
 
 	@app.route("/findMyInteractions", methods=["POST", "GET"])
-	def listAllInteractions():
+	def findMyInteractions():
 		data = db.get_db()
 
 		print("robie cos", flush=True)
@@ -510,31 +510,36 @@ def create_app(test_config=None):
 					print("Nie znalezione moje_leki", flush=True)
 					return render_template("myDrugsMessage.html", msg=msg)
 
+				print("Przed food", flush=True)
 				cur.execute("select DISTINCT Nazwa_handlowa from interakcje_produkty_spozywcze_leki " +
-							"WHERE Nazwa_handlowa IN (SELECT * Nazwa_handlowa from moje_leki) AND Inter_produkty_spozywcze = '{}'".format(name))
+							"WHERE Nazwa_handlowa IN (SELECT Nazwa_handlowa from moje_leki) AND Inter_produkty_spozywcze = '{}'".format(name))
 				food = cur.fetchall()
 				print("select food", flush=True)
 
-				cur.execute("select DISTINCT Nazwa_handlowa from (select A.Nazwa_handlowa, B.Nazwa_polska from moje_leki A " +
+				cur.execute("select DISTINCT C.Nazwa_handlowa from (select A.Nazwa_handlowa, B.Nazwa_polska from moje_leki A " +
 					"left join zawartosc_leku B on A.Nazwa_handlowa = B.Nazwa_handlowa) C, interakcje_leki D " +
 					"WHERE C.Nazwa_polska = D.Substancja_aktywna_leku AND D.Inter_substancja_aktywna = '{}'".format(name))
 				inters = cur.fetchall()
 				print("select subst akt", flush=True)
 
 				cur.execute(
-					"select DISTINCT Nazwa_handlowa from (select A.Nazwa_handlowa, B.Nazwa_polska from moje_leki A " +
+					"select DISTINCT C.Nazwa_handlowa from (select A.Nazwa_handlowa, B.Nazwa_polska from moje_leki A " +
 					"left join zawartosc_leku B on A.Nazwa_handlowa = B.Nazwa_handlowa) C, interakcje_leki D " +
 					"WHERE C.Nazwa_polska = D.Substancja_aktywna_leku AND D.Inter_substancja_aktywna IN "
-					+ "(SELECT Nazwa_polska FROM zawartosc_leku WHERE Nazwa_handlowa = '{}'".format(
-						name))
+					+ "(SELECT Nazwa_polska FROM zawartosc_leku WHERE Nazwa_handlowa = '{}');".format(name))
 				drugs_inter = cur.fetchall()
 				print("select leki", flush=True)
 
+				count = len(drugs_inter) + len(inters) + len(food)
+				if count == 0:
+					msg = "Brak znalezionych interakcji"
+					return render_template("myDrugsMessage.html", msg=msg)
 
+				result = {}
+				result.update(dict(food)).update(dict(drugs_inter)).update(dict(inters))
 
-				return render_template("listAllInteractionsMyDrugs.html", count=len(food) + len(inters),
-									   food=food_to_dict,
-									   inters=inters_to_dict)
+				return render_template("listAllInteractionsMyDrugs.html", count = count, inters = [result])
+
 				data.close_db()
 			except Exception as e:
 				msg = "Nie można znaleźć leku"
