@@ -320,6 +320,53 @@ def create_app(test_config=None):
 
 
 
+	@app.route("/deleteDrugForm", methods=["POST", "GET"])
+	def deleteDrugForm():
+		return render_template("deleteDrugForm.html")
+
+	@app.route("/deleteMyDrug", methods=["POST", "GET"])
+	def deleteMyDrug():
+		data = db.get_db()
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				name = request.form["drugSearch"]
+
+				if name == "":
+					msg = "Brak podanej nazwy leku"
+					return render_template("deleteFailure.html", msg=msg)
+
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+
+				cur.execute("SELECT * FROM moje_leki WHERE Nazwa_handlowa = '{}'".format(name))
+				print("Szukałem w moich lekach", flush=True)
+				rows = cur.fetchall()
+
+				if (len(rows) == 0):
+					msg = "Podany lek nie znajduje się w bazie"
+					return render_template("deleteFailure.html", msg=msg)
+
+				cur.execute("DELETE FROM moje_leki WHERE Nazwa_handlowa = '{}';".format(name))
+				# WHERE NOT EXISTS (SELECT * FROM moje_leki" +" WHERE Nazwa_handlowa = '{}')".format(name, name)
+				print("Usunąłem", flush=True)
+				data.commit()
+
+				deleted = {}
+				deleted['Nazwa_handlowa'] = name
+				msg = "Twój lek został usunięty"
+				print(deleted, flush=True)
+				return render_template("deleteSuccess.html", msg=msg, rows = [deleted])
+				data.close_db()
+			except Exception as e:
+				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
+				return render_template("blad.html", msg=msg)
+				data.close_db()
+
+
+
 
 
 
