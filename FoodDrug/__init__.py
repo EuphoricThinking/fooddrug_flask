@@ -39,6 +39,26 @@ def create_app(test_config=None):
 		cur.execute("select * from zawartosc_leku WHERE Nazwa_handlowa = 'Abakawir'")
 		rows = cur.fetchall()
 		return render_template("list_lek.html",rows = rows)
+		
+	@app.route('/lek/<name>')
+	def lek(name):
+		data = db.get_db()
+		data.row_factory = sqlite3.Row
+		cur = data.cursor()
+		#cur.execute("select * from lek")
+		cur.execute("select * from zawartosc_leku WHERE Nazwa_handlowa = ?", (name,))
+		rows = cur.fetchall()
+		return render_template("list_lek.html",rows = rows)
+	
+	@app.route('/dupa')
+	def lek(name):
+		data = db.get_db()
+		data.row_factory = sqlite3.Row
+		cur = data.cursor()
+		#cur.execute("select * from lek")
+		cur.execute("select * from zawartosc_leku")
+		rows = cur.fetchall()
+		return render_template("linki_leki.html",rows = rows)
 
 	@app.route("/trzy_najbardziej_niebezpieczne_produkty")
 	def trzy_najbardziej_niebezpieczne_produkty():
