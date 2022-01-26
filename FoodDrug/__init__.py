@@ -340,6 +340,16 @@ def create_app(test_config=None):
 				data.row_factory = sqlite3.Row
 				cur = data.cursor()
 
+				cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='moje_leki';")
+				# print("Pokaż leki", flush=True)
+				rows = cur.fetchall()
+				print("Pokaż leki po fetch", flush=True)
+
+				if len(rows) == 0:
+					msg = "Brak leków do usunięcia"
+					print("Nie znalezione moje_leki", flush=True)
+					return render_template("deleteFailure.html", msg=msg)
+
 				cur.execute("SELECT * FROM moje_leki WHERE Nazwa_handlowa = '{}'".format(name))
 				print("Szukałem w moich lekach", flush=True)
 				rows = cur.fetchall()
@@ -355,9 +365,8 @@ def create_app(test_config=None):
 
 				deleted = {}
 				deleted['Nazwa_handlowa'] = name
-				msg = "Twój lek został usunięty"
 				print(deleted, flush=True)
-				return render_template("deleteSuccess.html", msg=msg, rows = [deleted])
+				return render_template("deleteSuccess.html", rows = [deleted])
 				data.close_db()
 			except Exception as e:
 				msg = "Nie można znaleźć leku"
@@ -365,6 +374,61 @@ def create_app(test_config=None):
 				return render_template("blad.html", msg=msg)
 				data.close_db()
 
+
+
+	@app.route("/askToDelete", methods=["POST", "GET"])
+	def askToDelete():
+		return render_template("askDelete.html")
+
+	@app.route("/deleteMyDatabse", methods=["POST", "GET"])
+	def deleteMyDatabse():
+		data = db.get_db()
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				answer = request.form["Answer"]
+
+				if answer == "Nie":
+					msg = "Leki nie zostały usunięte"
+					return render_template("deleteFailure.html", msg=msg)
+				else:
+					data.row_factory = sqlite3.Row
+					cur = data.cursor()
+
+					cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='moje_leki';")
+					#print("Pokaż leki", flush=True)
+					rows = cur.fetchall()
+					print("Pokaż leki po fetch", flush=True)
+
+					if len(rows) == 0:
+						msg = "Brak leków do usunięcia"
+						print("Nie znalezione moje_leki", flush=True)
+						return render_template("deleteFailure.html", msg=msg)
+					# cur.execute("SELECT * FROM moje_leki")
+					# print("Wybieram wszystko w moich lekach", flush=True)
+					# rows = cur.fetchall()
+					# print("Zebrałem wiersze", flush=True)
+					#
+					#
+					# if (len(rows) == 0):
+					# 	msg = "Brak leków do usunięcia"
+					# 	return render_template("deleteFailure.html", msg=msg)
+					cur.execute("SELECT Nazwa_handlowa FROM moje_leki;")
+					rows = cur.fetchall()
+
+					cur.execute("DROP TABLE IF EXISTS moje_leki;")
+					# WHERE NOT EXISTS (SELECT * FROM moje_leki" +" WHERE Nazwa_handlowa = '{}')".format(name, name)
+					print("Usunąłem", flush=True)
+					data.commit()
+
+					return render_template("deleteSuccess.html", rows=rows)
+					data.close_db()
+			except Exception as e:
+				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
+				return render_template("blad.html", msg=msg)
+				data.close_db()
 
 
 
