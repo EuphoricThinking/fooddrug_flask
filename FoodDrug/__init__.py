@@ -153,16 +153,16 @@ def create_app(test_config=None):
 
 				cur.execute("select Dzialanie from leczenie WHERE Nazwa_handlowa = '{}'".format(name))
 				indirections = cur.fetchall()
-				for x in indirections:
-					print(tuple(x), flush=True)
+				# for x in indirections:
+				# 	print(tuple(x), flush=True)
 				print_me = [dict(x) for x in indirections]
-				print("TUTAJ", print_me, flush=True)
-				print("ind", indirections[0][0], "ind", flush=True)
+				# #print("TUTAJ", print_me, flush=True)
+				# print("ind", indirections[0][0], "ind", flush=True)
 				if indirections[0][0] == '':
 					print_me[0].update({'Dzialanie': 'Brak danych'})
 
-				print_me = [dict(x) for x in indirections]
-				print("TUTAJ", print_me, flush=True)
+				#print_me = [dict(x) for x in indirections]
+				#print("TUTAJ", print_me, flush=True)
 
 				if len(rows) == 0:
 					msg = "Brak wskazanego leku"
