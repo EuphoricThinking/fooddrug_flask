@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+   <body>
+      <h3>Interakcje dla leku {{name}}</h3>
+
+      <h3>Liczba interakcji</h3>
+      <h2>{{count}}</h2><br>
+
+      <h3>Interaktujące substancje aktywne</h3>
+      <ul>
+         {% for inter in inters %}
+            <li>
+               {{inter['Inter_substancja_aktywna']}}
+            </li>
+         {% endfor %}
+      </ul>
+
+      <h3>Interaktujące produkty spożywcze</h3>
+      <ul>
+         {% for foo in food %}
+            <li>
+               {{foo['Inter_produkty_spozywcze']}}
+            </li>
+         {% endfor %}
+      </ul><br>
+
+      <a href = "/">Powrót do strony głownej</a><br>
+
+   </body>
+</html>

@@ -148,9 +148,14 @@ def create_app(test_config=None):
 				print("PO execute", flush=True)
 				rows = cur.fetchall()
 
-				cur.execute("select COUNT(*) from interakcje_produkty_spozywcze_leki " +
+				cur.execute("select COUNT(DISTINCT Inter_produkty_spozywcze) from interakcje_produkty_spozywcze_leki " +
 							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
-				count = cur.fetchone()
+				count1 = cur.fetchone()
+
+				cur.execute("select COUNT(DISTINCT Inter_substancja_aktywna) from interakcje_leki WHERE " +
+							"Inter_substancja_aktywna <> '' AND Substancja_aktywna_leku IN " +
+							"(select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
+				count2 = cur.fetchone()
 
 				cur.execute("select Dzialanie from leczenie WHERE Nazwa_handlowa = '{}'".format(name))
 				indirections = cur.fetchall()
@@ -179,8 +184,8 @@ def create_app(test_config=None):
 					msg = "Brak wskazanego leku"
 					return render_template("blad.html", msg=msg)
 				else:
-					return render_template("wypiszDane.html", rows = rows, name = name, count = count[0], inds = ind_to_dict,
-										   addr = address[0])
+					return render_template("wypiszDane.html", rows = rows, name = name, count = int(count1[0]) + int(count2[0]),
+										   inds = ind_to_dict, addr = address[0])
 				data.close_db()
 			except Exception as e:
 				msg = "Nie można znaleźć leku"
@@ -188,7 +193,64 @@ def create_app(test_config=None):
 				return render_template("blad.html", msg = msg)
 				data.close_db()
 
+	@app.route("/findInteractionsRequest", methods = ["POST", "GET"])
+	def findInteractionsRequest():
+		return render_template("findInteractionsRequest.html")
 
+	@app.route("/findInteractions", methods=["POST", "GET"])
+	def findInteractions():
+		data = db.get_db()
+		print("robie cos", flush=True)
+		if request.method == "POST":
+			try:
+				print("robie cos w srodku", flush=True)
+				name = request.form["drugSearch"]
+
+				if name == "":
+					msg = "Brak podanej nazwy leku"
+					return render_template("blad.html", msg=msg)
+
+				data.row_factory = sqlite3.Row
+				cur = data.cursor()
+
+				cur.execute("select * from lek where Nazwa_handlowa = '{}'".format(name))
+				rows = cur.fetchall()
+				if len(rows) == 0:
+					msg = "Brak wskazanego leku"
+					return render_template("blad.html", msg=msg)
+
+				cur.execute("select COUNT(DISTINCT Inter_produkty_spozywcze) from interakcje_produkty_spozywcze_leki " +
+							"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa = '{}'".format(name))
+				count1 = cur.fetchone()
+
+				cur.execute("select COUNT(DISTINCT Inter_substancja_aktywna) from interakcje_leki WHERE " +
+							"Inter_substancja_aktywna <> '' AND Substancja_aktywna_leku IN " +
+							"(select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
+				count2 = cur.fetchone()
+
+				cur.execute("select distinct Inter_produkty_spozywcze from interakcje_produkty_spozywcze_leki "
+					+ "WHERE Nazwa_handlowa = '{}'".format(name))
+				food = cur.fetchall()
+				food_to_dict = [dict(x) for x in food]
+				if food[0][0] == '':
+					food_to_dict[0].update({'Inter_produkty_spozywcze': 'Brak danych'})
+
+				cur.execute("select distinct Inter_substancja_aktywna from interakcje_leki WHERE Substancja_aktywna_leku IN " +
+							"(select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa = '{}')".format(name))
+				inters = cur.fetchall()
+				inters_to_dict = [dict(x) for x in inters]
+				if inters[0][0] == '':
+					inters_to_dict[0].update({'Inter_substancja_aktywna': 'Brak danych'})
+
+				else:
+					return render_template("wypiszInterakcje.html", name=name, count=int(count1[0]) + int(count2[0]), food=food_to_dict,
+										   inters=inters_to_dict)
+				data.close_db()
+			except Exception as e:
+				msg = "Nie można znaleźć leku"
+				print(repr(e), flush=True)
+				return render_template("blad.html", msg=msg)
+				data.close_db()
 
 	return app
 
