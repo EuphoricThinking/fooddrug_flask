@@ -261,7 +261,7 @@ def create_app(test_config=None):
 				data.close_db()
 
 
-
+######################################################################################################################
 	@app.route("/myDrugsMenu", methods=["POST", "GET"])
 	def myDrugsMenu():
 		return render_template("myDrugsMenu.html")
@@ -430,6 +430,51 @@ def create_app(test_config=None):
 				print(repr(e), flush=True)
 				return render_template("blad.html", msg=msg)
 				data.close_db()
+
+	@app.route("/listAllInteractions")
+	def listAllInteractions():
+		data = db.get_db()
+
+		try:
+			print("robie cos w srodku", flush=True)
+
+			data.row_factory = sqlite3.Row
+			cur = data.cursor()
+
+			cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='moje_leki';")
+			rows = cur.fetchall()
+			print("Pokaż leki po fetch", flush=True)
+
+			if len(rows) == 0:
+				msg = "Brak dodanych leków"
+				print("Nie znalezione moje_leki", flush=True)
+				return render_template("myDrugsMessage.html", msg=msg)
+
+			cur.execute("select DISTINCT Inter_produkty_spozywcze from interakcje_produkty_spozywcze_leki " +
+						"WHERE Inter_produkty_spozywcze <> '' AND Nazwa_handlowa IN (select Nazwa_handlowa from moje_leki);")
+			food = cur.fetchall()
+			food_to_dict = [dict(x) for x in food]
+			if food[0][0] == '':
+				food_to_dict[0].update({'Inter_produkty_spozywcze': 'Brak danych'})
+
+			cur.execute("select DISTINCT Inter_substancja_aktywna from interakcje_leki WHERE " +
+						"Inter_substancja_aktywna <> '' AND Substancja_aktywna_leku IN " +
+						"(select Nazwa_polska from zawartosc_leku WHERE Nazwa_handlowa IN (SELECT Nazwa_handlowa from" +
+						" moje_leki));")
+			inters = cur.fetchall()
+			inters_to_dict = [dict(x) for x in inters]
+			if inters[0][0] == '':
+				inters_to_dict[0].update({'Inter_substancja_aktywna': 'Brak danych'})
+
+			return render_template("listAllInteractionsMyDrugs.html", count=len(food) + len(inters),
+									   food=food_to_dict,
+									   inters=inters_to_dict)
+			data.close_db()
+		except Exception as e:
+			msg = "Nie można znaleźć leku"
+			print(repr(e), flush=True)
+			return render_template("blad.html", msg=msg)
+			data.close_db()
 
 
 
