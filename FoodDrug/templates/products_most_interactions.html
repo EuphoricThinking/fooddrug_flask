@@ -2,10 +2,12 @@
 <html>
    <body>
    
+   <a href = "/">Powrót do głównego menu</a>
+   <h2>Lista produktów najczęściej interaktujących z lekami</h2>
       <table border = 1>
          <thead>
-            <td>Inter_produkty_spozywcze</td>
-            <td>ilea</td>
+            <td><b>Interaktujący produkt</b></td>
+            <td><b>Liczba interakcji</b></td>
          </thead>
          
          {% for row in rows %}
@@ -16,7 +18,6 @@
          {% endfor %}
       </table>
       
-      <a href = "/">Go back to home page</a>
       
    </body>
 </html>

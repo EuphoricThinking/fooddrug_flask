@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
    <body>
-      <h3>Leki interagujace z naszym produktem {{name}}</h3>
+      <h3>Leki wchodzące w interakcje z wybranym produktem: {{name}}</h3>
       <ul>
          {% for row in rows %}
             <li>
                {{row['Nazwa_handlowa']}}
             </li>
          {% endfor %}
-      </ul>
-
+      </ul><br>
+      
+      <a href = "/insertProduct">Powrót do wyszukiwania</a><br><br>
       <a href = "/">Powrót do strony głownej</a>
 
    </body>

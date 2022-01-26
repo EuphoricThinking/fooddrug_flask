@@ -4,8 +4,8 @@
       <h3>Substancje aktywne zawarte w leku {{name}}</h3>
       <table border = 1>
          <thead>
-            <td>Nazwa polska</td>
-            <td>Nazwa międzynarodowa</td>
+            <td><b>Nazwa polska</b></td>
+            <td><b>Nazwa międzynarodowa</b></td>
          </thead>
 
          {% for row in rows %}
@@ -28,7 +28,9 @@
          {% endfor %}
       </ul><br>
 
-      <a href = {{addr}}>Odnośnik do ulotki (encyklopedia leków DOZ)</a><br><br>
+      <a href = {{addr}}>Odnośnik do ulotki (encyklopedia leków DOZ)</a><br><br><br>
+      
+      <a href = "/dataDrugRequest">Powrót do wyszukiwania</a><br>
       <a href = "/">Powrót do strony głownej</a><br>
 
    </body>

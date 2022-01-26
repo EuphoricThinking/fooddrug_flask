@@ -40,14 +40,14 @@ def create_app(test_config=None):
 		rows = cur.fetchall()
 		return render_template("list_lek.html",rows = rows)
 
-	@app.route("/trzy_najbardziej_niebezpieczne_produkty")
-	def trzy_najbardziej_niebezpieczne_produkty():
+	@app.route("/products_most_interactions")
+	def products_most_interactions():
 		data = db.get_db()
 		data.row_factory = sqlite3.Row
 		cur = data.cursor()
 		cur.execute("select Inter_produkty_spozywcze, COUNT(*) from interakcje_produkty_spozywcze_leki WHERE Inter_produkty_spozywcze <> '' GROUP BY Inter_produkty_spozywcze ORDER BY COUNT(*) DESC")
 		rows = cur.fetchall()
-		return render_template("trzy_najbardziej_niebezpieczne_produkty.html", rows = rows)
+		return render_template("products_most_interactions.html", rows = rows)
 
 
 
