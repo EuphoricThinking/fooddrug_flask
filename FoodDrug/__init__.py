@@ -254,8 +254,7 @@ def create_app(test_config=None):
 				if inters[0][0] == '':
 					inters_to_dict[0].update({'Inter_substancja_aktywna': 'Brak danych'})
 
-				else:
-					return render_template("wypiszInterakcje.html", name=name, count=int(count1[0]) + int(count2[0]), food=food_to_dict,
+				return render_template("wypiszInterakcje.html", name=name, count=int(count1[0]) + int(count2[0]), food=food_to_dict,
 										   inters=inters_to_dict)
 				data.close_db()
 			except Exception as e:
